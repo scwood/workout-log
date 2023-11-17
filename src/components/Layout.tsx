@@ -1,31 +1,36 @@
 import { Outlet } from "react-router-dom";
-import { Title, useMantineColorScheme } from "@mantine/core";
-
-import styles from "./Layout.module.css";
+import { Link } from "react-router-dom";
+import {
+  UnstyledButton,
+  Container,
+  Flex,
+  ActionIcon,
+  Divider,
+} from "@mantine/core";
+import { IconBrandGithub } from "@tabler/icons-react";
 
 export function Layout() {
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <div className={styles.header}>
-          <Title order={2}>🏋️‍♂️ Workout log</Title>
-          <div className={styles.headerActions}>
-            <a
-              href="https://github.com/scwood/workout-log"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              github
-            </a>
-            <button onClick={toggleColorScheme}>
-              {colorScheme === "dark" ? "light" : "dark"}
-            </button>
-          </div>
-        </div>
-        <Outlet />
-      </div>
-    </div>
+    <Container p="lg" size="xs">
+      <Flex justify="space-between" align="center">
+        <UnstyledButton component={Link} to="/" fz={22} fw="600">
+          🏋️‍♂️ Workout log
+        </UnstyledButton>
+        <Flex gap="xs">
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            component="a"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/scwood/workout-log"
+          >
+            <IconBrandGithub />
+          </ActionIcon>
+        </Flex>
+      </Flex>
+      <Divider my="md" />
+      <Outlet />
+    </Container>
   );
 }

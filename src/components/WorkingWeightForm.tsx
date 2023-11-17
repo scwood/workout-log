@@ -1,6 +1,5 @@
-import { Button, Input, Label } from "@fluentui/react-components";
-import { useId, useState } from "react";
-import styles from "./WorkingWeightForm.module.css";
+import { Button, NumberInput, Flex } from "@mantine/core";
+import { useState } from "react";
 
 export interface WorkingWeight {
   bench: number;
@@ -21,67 +20,51 @@ export function WorkingWeightForm(props: WorkingWeightFormProps) {
   const [squat, setSquat] = useState(initialValues?.squat ?? 0);
   const [deadLift, setDeadLift] = useState(initialValues?.deadLift ?? 0);
 
-  const benchId = useId();
-  const pressId = useId();
-  const squatId = useId();
-  const deadLiftId = useId();
-
   return (
     <>
-      <div className={styles.form}>
-        <div className={styles.inputGroup}>
-          <Label htmlFor={benchId}>Bench press (lbs)</Label>
-          <Input
-            value={String(bench)}
-            onChange={(event) => setBench(parseInt(event.target.value))}
-            id={benchId}
-            type="number"
-            placeholder="135"
-            min={0}
-          />
-        </div>
-        <div className={styles.inputGroup}>
-          <Label htmlFor={deadLiftId}>Dead lift (lbs)</Label>
-          <Input
-            value={String(deadLift)}
-            onChange={(event) => setDeadLift(parseInt(event.target.value))}
-            id={deadLiftId}
-            type="number"
-            placeholder="135"
-            min={0}
-          />
-        </div>
-        <div className={styles.inputGroup}>
-          <Label htmlFor={pressId}>Overhead press (lbs)</Label>
-          <Input
-            value={String(press)}
-            onChange={(event) => setPress(parseInt(event.target.value))}
-            id={pressId}
-            type="number"
-            placeholder="135"
-            min={0}
-          />
-        </div>
-        <div className={styles.inputGroup}>
-          <Label htmlFor={squatId}>Squat (lbs)</Label>
-          <Input
-            value={String(squat)}
-            onChange={(event) => setSquat(parseInt(event.target.value))}
-            id={squatId}
-            type="number"
-            placeholder="135"
-            min={0}
-          />
-        </div>
-        <div className={styles.saveButton}>
+      <Flex direction="column" gap="xs">
+        <NumberInput
+          allowDecimal
+          label="Bench press (lbs)"
+          value={String(bench)}
+          onChange={(value) => setBench(parseFloat(String(value)))}
+          placeholder="135"
+          min={0}
+        />
+        <NumberInput
+          allowDecimal
+          label="Dead lift (lbs)"
+          value={String(deadLift)}
+          onChange={(value) => setDeadLift(parseFloat(String(value)))}
+          placeholder="135"
+          min={0}
+        />
+        <NumberInput
+          allowDecimal
+          label="Overhead press (lbs)"
+          value={String(press)}
+          onChange={(value) => setPress(parseFloat(String(value)))}
+          placeholder="135"
+          min={0}
+        />
+        <NumberInput
+          allowDecimal
+          label="Squat (lbs)"
+          value={String(squat)}
+          onChange={(value) => setSquat(parseFloat(String(value)))}
+          placeholder="135"
+          min={0}
+        />
+        <div>
           <Button
-            appearance="primary"
+            color="green"
             onClick={() => onSave?.({ bench, press, squat, deadLift })}
+            mt="xs"
           >
             Save
           </Button>
         </div>
-      </div>
+      </Flex>
     </>
   );
 }

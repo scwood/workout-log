@@ -10,6 +10,7 @@ import {
   setDoc,
   orderBy,
   limit,
+  updateDoc,
 } from "@firebase/firestore";
 
 import { Workout } from "../types/Workout";
@@ -49,6 +50,10 @@ export async function getCurrentWorkout(userId: string) {
     return null;
   }
   return snapshot.docs[0].data();
+}
+
+export async function updateWorkout(workout: Workout) {
+  await updateDoc(doc(getWorkOutCollection(), workout.id), { ...workout });
 }
 
 function getWorkOutCollection() {

@@ -33,7 +33,7 @@ export function calculateWarmupPlates(
   workingWeight: number,
   percentage: number
 ): string {
-  const weight = Math.max(45, round5(workingWeight * percentage));
+  const weight = calculateWarmupWeight(workingWeight, percentage);
   return calculatePlates(weight);
 }
 

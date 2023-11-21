@@ -6,10 +6,15 @@ import {
   Flex,
   ActionIcon,
   Divider,
+  Menu,
 } from "@mantine/core";
-import { IconBrandGithub } from "@tabler/icons-react";
+import { IconBrandGithub, IconLogout, IconUser } from "@tabler/icons-react";
+
+import { useAuth } from "./AuthProvider";
 
 export function Layout() {
+  const { signOut, userId, displayName } = useAuth();
+
   return (
     <Container p="lg" size="xs">
       <Flex justify="space-between" align="center">
@@ -27,6 +32,24 @@ export function Layout() {
           >
             <IconBrandGithub />
           </ActionIcon>
+          {userId && (
+            <Menu>
+              <Menu.Target>
+                <ActionIcon variant="subtle" color="gray">
+                  <IconUser />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                {displayName && <Menu.Item disabled>{displayName}</Menu.Item>}
+                <Menu.Item
+                  onClick={signOut}
+                  leftSection={<IconLogout size={14} />}
+                >
+                  Sign out
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          )}
         </Flex>
       </Flex>
       <Divider my="md" />

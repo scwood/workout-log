@@ -1,25 +1,39 @@
 import "@mantine/core/styles.css";
 import { createHashRouter, Navigate, RouterProvider } from "react-router-dom";
 import { createTheme } from "@mantine/core";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { Layout } from "./Layout";
-import { CurrentWorkout } from "./CurrentWorkout";
 import { MantineProvider } from "@mantine/core";
+import { SignInPage } from "./SignInPage";
+import { ProtectedRoute } from "./ProtectedRoute";
+import { CurrentWorkout } from "./CurrentWorkout";
+import { AuthProvider } from "./AuthProvider";
 
 const theme = createTheme({ headings: { fontWeight: "600" } });
+const queryClient = new QueryClient();
 
 const hashRouter = createHashRouter([
   {
-    path: "/*",
+    path: "/",
     element: <Layout />,
     children: [
       {
-        path: "current-workout",
-        element: <CurrentWorkout />,
+        element: <ProtectedRoute />,
+        children: [
+          {
+            index: true,
+            element: <CurrentWorkout />,
+          },
+        ],
+      },
+      {
+        path: "sign-in",
+        element: <SignInPage />,
       },
       {
         path: "*",
-        element: <Navigate to="current-workout" />,
+        element: <Navigate to="/" />,
       },
     ],
   },
@@ -27,8 +41,12 @@ const hashRouter = createHashRouter([
 
 export function App() {
   return (
-    <MantineProvider theme={theme} defaultColorScheme="dark">
-      <RouterProvider router={hashRouter} />
-    </MantineProvider>
+    <AuthProvider>
+      <MantineProvider theme={theme} defaultColorScheme="dark">
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={hashRouter} />
+        </QueryClientProvider>
+      </MantineProvider>
+    </AuthProvider>
   );
 }

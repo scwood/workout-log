@@ -59,11 +59,9 @@ export function ExerciseTable(props: ExerciseProps) {
           </Table.Tr>
         </Table.Tbody>
       </Table>
-      {!!currentRepRecord && (
-        <Text c="dimmed" fz="sm" mb="xs">
-          Last set rep record at this weight: {currentRepRecord}
-        </Text>
-      )}
+      <Text c="dimmed" fz="sm" mb="xs">
+        Last set rep record at this weight: {currentRepRecord || "N/A"}
+      </Text>
       <Button size="xs" color="green" onClick={() => onComplete(0)}>
         Complete
       </Button>

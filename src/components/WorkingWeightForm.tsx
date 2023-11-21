@@ -1,24 +1,20 @@
 import { Button, NumberInput, Flex } from "@mantine/core";
 import { useState } from "react";
 
-export interface WorkingWeight {
-  bench: number;
-  press: number;
-  squat: number;
-  deadLift: number;
-}
+import { Exercise } from "../types/Exercise";
 
 export interface WorkingWeightFormProps {
-  initialValues?: WorkingWeight;
-  onSave?: (workingWeight: WorkingWeight) => void;
+  onSave: (workingWeight: { [key in Exercise]: number }) => void;
 }
 
 export function WorkingWeightForm(props: WorkingWeightFormProps) {
-  const { initialValues, onSave } = props;
-  const [bench, setBench] = useState(initialValues?.bench ?? 0);
-  const [press, setPress] = useState(initialValues?.press ?? 0);
-  const [squat, setSquat] = useState(initialValues?.squat ?? 0);
-  const [deadLift, setDeadLift] = useState(initialValues?.deadLift ?? 0);
+  const { onSave } = props;
+  const [benchPress, setBenchPress] = useState(0);
+  const [overheadPress, setOverheadPress] = useState(0);
+  const [squat, setSquat] = useState(0);
+  const [deadLift, setDeadLift] = useState(0);
+  const isValid =
+    benchPress > 0 && overheadPress > 0 && squat > 0 && deadLift > 0;
 
   return (
     <>
@@ -26,9 +22,8 @@ export function WorkingWeightForm(props: WorkingWeightFormProps) {
         <NumberInput
           allowDecimal
           label="Bench press (lbs)"
-          value={String(bench)}
-          onChange={(value) => setBench(parseFloat(String(value)))}
-          placeholder="135"
+          value={String(benchPress)}
+          onChange={(value) => setBenchPress(parseFloat(String(value)))}
           min={0}
         />
         <NumberInput
@@ -36,15 +31,13 @@ export function WorkingWeightForm(props: WorkingWeightFormProps) {
           label="Dead lift (lbs)"
           value={String(deadLift)}
           onChange={(value) => setDeadLift(parseFloat(String(value)))}
-          placeholder="135"
           min={0}
         />
         <NumberInput
           allowDecimal
           label="Overhead press (lbs)"
-          value={String(press)}
-          onChange={(value) => setPress(parseFloat(String(value)))}
-          placeholder="135"
+          value={String(overheadPress)}
+          onChange={(value) => setOverheadPress(parseFloat(String(value)))}
           min={0}
         />
         <NumberInput
@@ -52,14 +45,16 @@ export function WorkingWeightForm(props: WorkingWeightFormProps) {
           label="Squat (lbs)"
           value={String(squat)}
           onChange={(value) => setSquat(parseFloat(String(value)))}
-          placeholder="135"
           min={0}
         />
         <div>
           <Button
             color="green"
-            onClick={() => onSave?.({ bench, press, squat, deadLift })}
+            onClick={() =>
+              onSave({ benchPress, overheadPress, squat, deadLift })
+            }
             mt="xs"
+            disabled={!isValid}
           >
             Save
           </Button>

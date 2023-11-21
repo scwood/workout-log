@@ -1,29 +1,31 @@
-import { Flex, Title } from "@mantine/core";
-import { useLocalStorage } from "@mantine/hooks";
+import { Flex, Title, Center, Loader } from "@mantine/core";
 
-import { WorkingWeight, WorkingWeightForm } from "./WorkingWeightForm";
 import { ExerciseTable } from "./ExerciseTable";
-
-export interface Workout {
-  workingWeight: WorkingWeight;
-  completedDate?: Date;
-}
+import { WorkingWeightForm } from "./WorkingWeightForm";
+import { useCurrentWorkoutQuery } from "../hooks/useCurrentWorkoutQuery";
+import { Exercise } from "../types/Exercise";
+import { useCreateWorkoutMutation } from "../hooks/useCreateWorkoutMutation";
 
 export function CurrentWorkout() {
-  const [workouts, setWorkouts] = useLocalStorage<Workout[]>({
-    key: "workout-log-workouts",
-    defaultValue: [],
-  });
+  const { isLoading, isError, data: currentWorkout } = useCurrentWorkoutQuery();
+  const { mutate: createWorkout } = useCreateWorkoutMutation();
 
-  if (!workouts || workouts.length === 0) {
+  if (isLoading) {
+    return (
+      <Center>
+        <Loader />
+      </Center>
+    );
+  } else if (isError) {
+    return <Center>Failed to get workouts</Center>;
+  } else if (!currentWorkout) {
     return (
       <>
-        <p>Add your current working weight for each exercise to get started:</p>
-        <WorkingWeightForm onSave={saveInitialWorkingWeights} />
+        <p>Add your current working weight for each exercise:</p>
+        <WorkingWeightForm onSave={handleSaveWorkingWeight} />
       </>
     );
   } else {
-    const currentWorkout = workouts[0];
     return (
       <>
         <Title order={3} mb="md">
@@ -32,7 +34,7 @@ export function CurrentWorkout() {
         <Flex direction="column" gap="lg">
           <ExerciseTable
             name="Bench press"
-            workingWeight={currentWorkout.workingWeight.bench}
+            workingWeight={currentWorkout.workingWeight.benchPress}
             currentRepRecord={0}
             onComplete={() => {}}
           />
@@ -45,7 +47,7 @@ export function CurrentWorkout() {
           />
           <ExerciseTable
             name="Overhead press"
-            workingWeight={currentWorkout.workingWeight.press}
+            workingWeight={currentWorkout.workingWeight.overheadPress}
             currentRepRecord={0}
             onComplete={() => {}}
           />
@@ -60,7 +62,9 @@ export function CurrentWorkout() {
     );
   }
 
-  function saveInitialWorkingWeights(workingWeight: WorkingWeight) {
-    setWorkouts([{ workingWeight }]);
+  function handleSaveWorkingWeight(workingWeight: {
+    [keys in Exercise]: number;
+  }) {
+    createWorkout({ workingWeight });
   }
 }

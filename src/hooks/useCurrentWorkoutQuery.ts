@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCurrentUser } from "../components/CurrentUserProvider";
-import { getCurrentWorkout } from "../api/workoutApi";
+import { getCurrentWorkout } from "../api/workoutsApi";
 
 export function currentWorkoutQueryKey(userId: string) {
   return ["currentWorkout", userId];

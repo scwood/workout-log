@@ -1,31 +1,34 @@
-import { Table, Title, Text, Button } from "@mantine/core";
+import { Table, Title, Text, Button, Modal, NumberInput } from "@mantine/core";
 
 import {
   calculatePlates,
   calculateWarmupPlates,
   calculateWarmupWeight,
 } from "../utils/weightUtils";
+import { Exercise, exerciseDisplayNames } from "../types/Exercise";
+import { useState } from "react";
+import { Workout } from "../types/Workout";
 
 export interface ExerciseProps {
-  name: string;
-  workingWeight: number;
-  currentRepRecord: number;
-  lastSetRepScheme?: string;
-  onComplete: (lastSetReps: number) => void;
+  exercise: Exercise;
+  workout: Workout;
+  onComplete: (exercise: Exercise, lastSetReps: number) => void;
 }
 
 export function ExerciseTable(props: ExerciseProps) {
-  const {
-    name,
-    workingWeight,
-    currentRepRecord,
-    lastSetRepScheme,
-    onComplete,
-  } = props;
+  const { exercise, workout, onComplete } = props;
+  const [isLastSetModalOpen, setIsLastSetModalOpen] = useState(false);
+
+  const [lastSetRepsInput, setLastSetRepsInput] = useState<string | number>("");
+  const lastSetReps = parseInt(String(lastSetRepsInput));
+  const isSaveDisabled = isNaN(lastSetReps) || lastSetReps === 0;
+
+  const displayName = exerciseDisplayNames[exercise];
+  const workingWeight = workout.workingWeight[exercise];
 
   return (
     <div>
-      <Title order={4}>{name}</Title>
+      <Title order={4}>{displayName}</Title>
       <Table mb="xs">
         <Table.Thead>
           <Table.Tr>
@@ -52,7 +55,7 @@ export function ExerciseTable(props: ExerciseProps) {
           </Table.Tr>
           <Table.Tr>
             <Table.Td>
-              {lastSetRepScheme ? lastSetRepScheme : "2x5, 1x5+"}
+              {exercise === "deadLift" ? "1x5+" : "2x5, 1x5+"}
             </Table.Td>
             <Table.Td>{workingWeight}</Table.Td>
             <Table.Td>{calculatePlates(workingWeight)}</Table.Td>
@@ -60,11 +63,43 @@ export function ExerciseTable(props: ExerciseProps) {
         </Table.Tbody>
       </Table>
       <Text c="dimmed" fz="sm" mb="xs">
-        Last set rep record at this weight: {currentRepRecord || "N/A"}
+        Last set rep record at this weight: TODO
       </Text>
-      <Button size="xs" color="green" onClick={() => onComplete(0)}>
+      <Button
+        size="xs"
+        color="green"
+        onClick={() => setIsLastSetModalOpen(true)}
+      >
         Complete
       </Button>
+      <Modal
+        centered
+        title={displayName}
+        opened={isLastSetModalOpen}
+        onClose={() => setIsLastSetModalOpen(false)}
+      >
+        <NumberInput
+          data-autofocus
+          min={0}
+          value={lastSetRepsInput}
+          onChange={setLastSetRepsInput}
+          allowDecimal={false}
+          label="How many reps did you do on the last set?"
+        />
+        <Button
+          color="green"
+          disabled={isSaveDisabled}
+          onClick={handleSave}
+          mt="xs"
+        >
+          Save
+        </Button>
+      </Modal>
     </div>
   );
+
+  function handleSave() {
+    onComplete(exercise, lastSetReps);
+    setIsLastSetModalOpen(false);
+  }
 }

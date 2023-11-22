@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useCurrentUser } from "../components/CurrentUserProvider";
-import { createWorkout } from "../api/workoutApi";
+import { createWorkout } from "../api/workoutsApi";
 import { Exercise } from "../types/Exercise";
 import { currentWorkoutQueryKey } from "./useCurrentWorkoutQuery";
 

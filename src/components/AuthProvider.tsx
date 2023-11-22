@@ -58,6 +58,15 @@ export function AuthProvider(props: AuthProviderProps) {
     }
   }, []);
 
+  const signOut = useCallback(async () => {
+    try {
+      await getAuth().signOut();
+      setError(null);
+    } catch (error) {
+      setError(error as Error);
+    }
+  }, []);
+
   return (
     <authContext.Provider
       value={{
@@ -90,8 +99,4 @@ function signInWithGoogle() {
 
 function signInWithGitHub() {
   return signInWithPopup(getAuth(), new GithubAuthProvider());
-}
-
-function signOut() {
-  return getAuth().signOut();
 }

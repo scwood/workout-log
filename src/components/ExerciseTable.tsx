@@ -8,15 +8,17 @@ import {
 import { Exercise, exerciseDisplayNames } from "../types/Exercise";
 import { useState } from "react";
 import { Workout } from "../types/Workout";
+import { RepRecords } from "../types/RepRecords";
 
 export interface ExerciseProps {
   exercise: Exercise;
   workout: Workout;
+  repRecords: RepRecords;
   onComplete: (exercise: Exercise, lastSetReps: number) => void;
 }
 
 export function ExerciseTable(props: ExerciseProps) {
-  const { exercise, workout, onComplete } = props;
+  const { exercise, workout, repRecords, onComplete } = props;
   const [isLastSetModalOpen, setIsLastSetModalOpen] = useState(false);
 
   const [lastSetRepsInput, setLastSetRepsInput] = useState<string | number>("");
@@ -63,7 +65,8 @@ export function ExerciseTable(props: ExerciseProps) {
         </Table.Tbody>
       </Table>
       <Text c="dimmed" fz="sm" mb="xs">
-        Last set rep record at this weight: TODO
+        Last set rep record at this weight:{" "}
+        {repRecords.records[exercise][workingWeight] || "N/A"}
       </Text>
       <Button
         size="xs"

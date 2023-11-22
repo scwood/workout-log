@@ -57,9 +57,8 @@ export async function updateWorkout(workout: Workout) {
 }
 
 function getWorkOutCollection() {
-  return collection(getDb(), "workouts") as CollectionReference<Workout>;
-}
-
-function getDb() {
-  return getFirestore(getApp());
+  return collection(
+    getFirestore(getApp()),
+    "workouts"
+  ) as CollectionReference<Workout>;
 }

@@ -9,11 +9,29 @@ import { useUpdateWorkoutMutation } from "../hooks/useUpdateWorkoutMutation";
 import { CompletedExercise } from "./CompletedExercise";
 import { Workout } from "../types/Workout";
 import { calculateDeload } from "../utils/weightUtils";
+import { useRepRecordsQuery } from "../hooks/useRepRecordsQuery";
+import { useUpdateRepRecordsMutation } from "../hooks/useUpdateRepRecordsMutation";
+import { RepRecords } from "../types/RepRecords";
 
 export function CurrentWorkout() {
-  const { isLoading, isError, data: currentWorkout } = useCurrentWorkoutQuery();
+  const {
+    isLoading: isLoadingWorkout,
+    isError: failedToLoadWorkout,
+    data: currentWorkout,
+  } = useCurrentWorkoutQuery();
+
+  const {
+    isLoading: isLoadingRepRecords,
+    isError: failedToLoadRepRecords,
+    data: repRecords,
+  } = useRepRecordsQuery();
+
   const { mutate: createWorkout } = useCreateWorkoutMutation();
   const { mutate: updateWorkout } = useUpdateWorkoutMutation();
+  const { mutate: updateRepRecords } = useUpdateRepRecordsMutation();
+
+  const isLoading = isLoadingWorkout || isLoadingRepRecords;
+  const isError = failedToLoadWorkout || failedToLoadRepRecords;
 
   if (isLoading) {
     return (
@@ -21,7 +39,7 @@ export function CurrentWorkout() {
         <Loader />
       </Center>
     );
-  } else if (isError) {
+  } else if (isError || !repRecords) {
     return <Center>Failed to get workout</Center>;
   } else if (!currentWorkout) {
     return (
@@ -71,6 +89,7 @@ export function CurrentWorkout() {
                   key={exercise}
                   exercise={exercise}
                   workout={currentWorkout}
+                  repRecords={repRecords}
                   onComplete={handleComplete}
                 />
               )
@@ -135,7 +154,7 @@ export function CurrentWorkout() {
   }
 
   function handleCreateNextWorkout() {
-    if (!currentWorkout) {
+    if (!currentWorkout || !repRecords) {
       return;
     }
     const newWorkingWeight = { ...currentWorkout.workingWeight };
@@ -152,6 +171,24 @@ export function CurrentWorkout() {
         newWorkingWeight[exercise] = calculateDeload(prevWorkingWeight);
       }
     }
+    recordRepRecords(currentWorkout);
     createWorkout({ workingWeight: newWorkingWeight });
+  }
+
+  function recordRepRecords(workout: Workout) {
+    if (!repRecords) {
+      return;
+    }
+    const repRecordUpdates: RepRecords = { ...repRecords };
+    for (const exercise of allExercises) {
+      const workingWeight = workout.workingWeight[exercise];
+      const lastSetReps = workout.lastSetReps[exercise] || 0;
+      const previousRecord = repRecords.records[exercise][workingWeight] || 0;
+      repRecordUpdates.records[exercise][workingWeight] = Math.max(
+        lastSetReps,
+        previousRecord
+      );
+    }
+    updateRepRecords({ repRecords: repRecordUpdates });
   }
 }

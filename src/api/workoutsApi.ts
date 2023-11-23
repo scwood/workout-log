@@ -56,6 +56,17 @@ export async function updateWorkout(workout: Workout) {
   await updateDoc(doc(getWorkOutCollection(), workout.id), { ...workout });
 }
 
+export async function getWorkouts(userId: string) {
+  const snapshot = await getDocs(
+    query(
+      getWorkOutCollection(),
+      where("userId", "==", userId),
+      orderBy("createdTimestamp", "desc")
+    )
+  );
+  return snapshot.docs.map((doc) => doc.data());
+}
+
 function getWorkOutCollection() {
   return collection(
     getFirestore(getApp()),

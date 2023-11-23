@@ -9,6 +9,7 @@ import { SignInPage } from "./SignInPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { CurrentWorkout } from "./CurrentWorkout";
 import { AuthProvider } from "./AuthProvider";
+import { History } from "./History";
 
 const theme = createTheme({ headings: { fontWeight: "600" } });
 const queryClient = new QueryClient();
@@ -24,6 +25,10 @@ const hashRouter = createHashRouter([
           {
             index: true,
             element: <CurrentWorkout />,
+          },
+          {
+            path: "history",
+            element: <History />,
           },
         ],
       },

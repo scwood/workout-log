@@ -1,12 +1,12 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
   UnstyledButton,
   Container,
   Flex,
   ActionIcon,
-  Divider,
   Menu,
+  Tabs,
 } from "@mantine/core";
 import { IconBrandGithub, IconLogout, IconUser } from "@tabler/icons-react";
 
@@ -14,10 +14,12 @@ import { useAuth } from "./AuthProvider";
 
 export function Layout() {
   const { signOut, userId, displayName } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <Container p="lg" size="xs">
-      <Flex justify="space-between" align="center">
+      <Flex justify="space-between" align="center" mb="md">
         <UnstyledButton component={Link} to="/" fz={22} fw="600">
           🏋️‍♂️ Workout log
         </UnstyledButton>
@@ -52,8 +54,21 @@ export function Layout() {
           )}
         </Flex>
       </Flex>
-      <Divider my="md" />
+      {userId && (
+        <Tabs mb="md" value={location.pathname} onChange={handleTabChange}>
+          <Tabs.List>
+            <Tabs.Tab value="/">Current workout</Tabs.Tab>
+            <Tabs.Tab value="/history">History</Tabs.Tab>
+          </Tabs.List>
+        </Tabs>
+      )}
       <Outlet />
     </Container>
   );
+
+  function handleTabChange(path: string | null) {
+    if (path) {
+      navigate(path);
+    }
+  }
 }

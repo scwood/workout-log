@@ -4,6 +4,7 @@ import { useCurrentUser } from "../components/CurrentUserProvider";
 import { updateWorkout } from "../api/workoutsApi";
 import { currentWorkoutQueryKey } from "./useCurrentWorkoutQuery";
 import { Workout } from "../types/Workout";
+import { workoutsQueryKey } from "./useWorkoutsQuery";
 
 export function useUpdateWorkoutMutation() {
   const { userId } = useCurrentUser();
@@ -16,6 +17,9 @@ export function useUpdateWorkoutMutation() {
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: currentWorkoutQueryKey(userId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: workoutsQueryKey(userId),
       });
     },
   });

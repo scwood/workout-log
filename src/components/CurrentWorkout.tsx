@@ -96,9 +96,11 @@ export function CurrentWorkout() {
             );
           })}
         </Flex>
-        <Title order={3} mb="md">
-          Completed exercises
-        </Title>
+        {isAnyExerciseComplete() && (
+          <Title order={3} mb="md">
+            Completed exercises
+          </Title>
+        )}
         <Flex direction="column" gap="lg">
           {allExercises.map((exercise) => {
             return (
@@ -161,7 +163,14 @@ export function CurrentWorkout() {
     for (const exercise of allExercises) {
       const prevWorkingWeight = currentWorkout.workingWeight[exercise];
       const prevLastSetReps = currentWorkout.lastSetReps[exercise] || 0;
-      if (prevLastSetReps >= 5) {
+
+      if (prevLastSetReps >= 10) {
+        if (exercise === "benchPress" || exercise === "overheadPress") {
+          newWorkingWeight[exercise] += 5;
+        } else {
+          newWorkingWeight[exercise] += 10;
+        }
+      } else if (prevLastSetReps >= 5) {
         if (exercise === "benchPress" || exercise === "overheadPress") {
           newWorkingWeight[exercise] += 2.5;
         } else {
@@ -190,5 +199,12 @@ export function CurrentWorkout() {
       );
     }
     updateRepRecords({ repRecords: repRecordUpdates });
+  }
+
+  function isAnyExerciseComplete() {
+    return (
+      !!currentWorkout &&
+      Object.values(currentWorkout.lastSetReps).some((reps) => !!reps)
+    );
   }
 }

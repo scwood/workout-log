@@ -14,6 +14,14 @@ export function useUpdateWorkoutMutation() {
     mutationFn: ({ workout }: { workout: Workout }) => {
       return updateWorkout(workout);
     },
+    onMutate: ({ workout }) => {
+      const currentWorkout = queryClient.getQueryData<Workout>(
+        currentWorkoutQueryKey(userId)
+      );
+      if (currentWorkout && currentWorkout.id === workout.id) {
+        queryClient.setQueryData(currentWorkoutQueryKey(userId), workout);
+      }
+    },
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: currentWorkoutQueryKey(userId),

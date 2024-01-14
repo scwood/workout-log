@@ -1,4 +1,14 @@
-import { Flex, Title, Center, Loader, Button } from "@mantine/core";
+import {
+  Flex,
+  Title,
+  Center,
+  Loader,
+  Button,
+  Modal,
+  ActionIcon,
+} from "@mantine/core";
+import { useState } from "react";
+import { IconPencil } from "@tabler/icons-react";
 
 import { ExerciseTable } from "./ExerciseTable";
 import { WorkingWeightForm } from "./WorkingWeightForm";
@@ -30,6 +40,7 @@ export function CurrentWorkout() {
   const { mutate: updateWorkout } = useUpdateWorkoutMutation();
   const { mutate: updateRepRecords } = useUpdateRepRecordsMutation();
 
+  const [isEditWorkoutModalOpen, setIsEditWorkoutModalOpen] = useState(false);
   const isLoading = isLoadingWorkout || isLoadingRepRecords;
   const isError = failedToLoadWorkout || failedToLoadRepRecords;
 
@@ -45,7 +56,7 @@ export function CurrentWorkout() {
     return (
       <>
         <p>Add your current working weight for each exercise:</p>
-        <WorkingWeightForm onSave={handleSaveWorkingWeight} />
+        <WorkingWeightForm onSave={handleSaveInitialWorkingWeight} />
       </>
     );
   } else if (currentWorkout.completedTimestamp) {
@@ -78,9 +89,18 @@ export function CurrentWorkout() {
   } else {
     return (
       <>
-        <Title order={3} mb="md">
-          Current workout
-        </Title>
+        <Flex justify="space-between" align="center">
+          <Title order={3} mb="md">
+            Current workout
+          </Title>
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            onClick={() => setIsEditWorkoutModalOpen(true)}
+          >
+            <IconPencil />
+          </ActionIcon>
+        </Flex>
         <Flex direction="column" gap="lg" mb="lg">
           {allExercises.map((exercise) => {
             return (
@@ -115,14 +135,36 @@ export function CurrentWorkout() {
             );
           })}
         </Flex>
+
+        <Modal
+          centered
+          title="Edit workout"
+          opened={isEditWorkoutModalOpen}
+          onClose={() => setIsEditWorkoutModalOpen(false)}
+        >
+          <WorkingWeightForm
+            initialValues={currentWorkout?.workingWeight}
+            onSave={handleUpdateWorkingWeight}
+          />
+        </Modal>
       </>
     );
   }
 
-  function handleSaveWorkingWeight(workingWeight: {
+  function handleSaveInitialWorkingWeight(workingWeight: {
     [keys in Exercise]: number;
   }) {
     createWorkout({ workingWeight });
+  }
+
+  function handleUpdateWorkingWeight(workingWeight: {
+    [keys in Exercise]: number;
+  }) {
+    if (!currentWorkout) {
+      return;
+    }
+    updateWorkout({ workout: { ...currentWorkout, workingWeight } });
+    setIsEditWorkoutModalOpen(false);
   }
 
   function handleComplete(exercise: Exercise, lastSetReps: number) {

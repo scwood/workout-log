@@ -4,15 +4,18 @@ import { useState } from "react";
 import { Exercise } from "../types/Exercise";
 
 export interface WorkingWeightFormProps {
+  initialValues?: { [key in Exercise]: number };
   onSave: (workingWeight: { [key in Exercise]: number }) => void;
 }
 
 export function WorkingWeightForm(props: WorkingWeightFormProps) {
-  const { onSave } = props;
-  const [benchPress, setBenchPress] = useState(0);
-  const [overheadPress, setOverheadPress] = useState(0);
-  const [squat, setSquat] = useState(0);
-  const [deadLift, setDeadLift] = useState(0);
+  const { initialValues, onSave } = props;
+  const [benchPress, setBenchPress] = useState(initialValues?.benchPress ?? 0);
+  const [overheadPress, setOverheadPress] = useState(
+    initialValues?.overheadPress ?? 0
+  );
+  const [squat, setSquat] = useState(initialValues?.squat ?? 0);
+  const [deadLift, setDeadLift] = useState(initialValues?.deadLift ?? 0);
   const isValid =
     benchPress > 0 && overheadPress > 0 && squat > 0 && deadLift > 0;
 

@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { IconBrandGithub, IconLogout, IconUser } from "@tabler/icons-react";
 
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "../hooks/useAuth";
 
 export function Layout() {
   const { signOut, userId, displayName } = useAuth();

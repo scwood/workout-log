@@ -1,10 +1,10 @@
 import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
 import { createHashRouter, Navigate, RouterProvider } from "react-router-dom";
-import { createTheme } from "@mantine/core";
+import { createTheme, MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { Layout } from "./Layout";
-import { MantineProvider } from "@mantine/core";
 import { SignInPage } from "./SignInPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { CurrentWorkout } from "./CurrentWorkout";

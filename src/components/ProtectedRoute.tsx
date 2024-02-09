@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router";
 
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "../hooks/useAuth";
 import { CurrentUserProvider } from "./CurrentUserProvider";
 
 export function ProtectedRoute() {

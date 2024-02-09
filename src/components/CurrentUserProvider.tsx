@@ -1,10 +1,6 @@
-import { ReactNode, createContext, useContext } from "react";
+import { ReactNode } from "react";
 
-export interface CurrentUserContext {
-  userId: string;
-}
-
-const context = createContext<CurrentUserContext | null>(null);
+import { currentUserContext } from "../contexts/currentUserContext";
 
 export interface CurrentUserProviderProps {
   userId: string;
@@ -14,15 +10,9 @@ export interface CurrentUserProviderProps {
 export function CurrentUserProvider(props: CurrentUserProviderProps) {
   const { userId, children } = props;
 
-  return <context.Provider value={{ userId }}>{children}</context.Provider>;
-}
-
-export function useCurrentUser() {
-  const contextValue = useContext(context);
-
-  if (!contextValue) {
-    throw new Error("useCurrentUser must be used within a CurrentUserProvider");
-  }
-
-  return contextValue;
+  return (
+    <currentUserContext.Provider value={{ userId }}>
+      {children}
+    </currentUserContext.Provider>
+  );
 }

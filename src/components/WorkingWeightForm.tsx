@@ -10,14 +10,31 @@ export interface WorkingWeightFormProps {
 
 export function WorkingWeightForm(props: WorkingWeightFormProps) {
   const { initialValues, onSave } = props;
-  const [benchPress, setBenchPress] = useState(initialValues?.benchPress ?? 0);
-  const [overheadPress, setOverheadPress] = useState(
-    initialValues?.overheadPress ?? 0
+  const [benchPress, setBenchPress] = useState<string | number>(
+    initialValues?.benchPress ?? ""
   );
-  const [squat, setSquat] = useState(initialValues?.squat ?? 0);
-  const [deadLift, setDeadLift] = useState(initialValues?.deadLift ?? 0);
+  const [overheadPress, setOverheadPress] = useState<string | number>(
+    initialValues?.overheadPress ?? ""
+  );
+  const [squat, setSquat] = useState<string | number>(
+    initialValues?.squat ?? ""
+  );
+  const [deadLift, setDeadLift] = useState<string | number>(
+    initialValues?.deadLift ?? ""
+  );
+
+  const parsedValues = {
+    benchPress: parseFloat(String(benchPress)),
+    overheadPress: parseFloat(String(overheadPress)),
+    squat: parseInt(String(squat)),
+    deadLift: parseInt(String(deadLift)),
+  };
+
   const isValid =
-    benchPress > 0 && overheadPress > 0 && squat > 0 && deadLift > 0;
+    parsedValues.benchPress > 0 &&
+    parsedValues.overheadPress > 0 &&
+    parsedValues.squat > 0 &&
+    parsedValues.deadLift > 0;
 
   return (
     <>
@@ -25,37 +42,39 @@ export function WorkingWeightForm(props: WorkingWeightFormProps) {
         <NumberInput
           allowDecimal
           label="Bench press (lbs)"
-          value={String(benchPress)}
-          onChange={(value) => setBenchPress(parseFloat(String(value)))}
+          placeholder="100"
+          value={benchPress}
+          onChange={setBenchPress}
           min={0}
         />
         <NumberInput
           allowDecimal
           label="Dead lift (lbs)"
-          value={String(deadLift)}
-          onChange={(value) => setDeadLift(parseFloat(String(value)))}
+          placeholder="100"
+          value={deadLift}
+          onChange={setDeadLift}
           min={0}
         />
         <NumberInput
           allowDecimal
           label="Overhead press (lbs)"
-          value={String(overheadPress)}
-          onChange={(value) => setOverheadPress(parseFloat(String(value)))}
+          placeholder="100"
+          value={overheadPress}
+          onChange={setOverheadPress}
           min={0}
         />
         <NumberInput
           allowDecimal
           label="Squat (lbs)"
-          value={String(squat)}
-          onChange={(value) => setSquat(parseFloat(String(value)))}
+          placeholder="100"
+          value={squat}
+          onChange={setSquat}
           min={0}
         />
         <div>
           <Button
             color="green"
-            onClick={() =>
-              onSave({ benchPress, overheadPress, squat, deadLift })
-            }
+            onClick={handleSave}
             mt="xs"
             disabled={!isValid}
           >
@@ -65,4 +84,10 @@ export function WorkingWeightForm(props: WorkingWeightFormProps) {
       </Flex>
     </>
   );
+
+  function handleSave() {
+    if (isValid) {
+      onSave(parsedValues);
+    }
+  }
 }

@@ -14,12 +14,15 @@ import {
 } from "@firebase/firestore";
 
 import { Workout } from "../types/Workout";
-import { Exercise } from "../types/Exercise";
 
-export async function createWorkout(
-  userId: string,
-  workingWeight: { [key in Exercise]: number }
-) {
+export async function createWorkout({
+  userId,
+  workingWeight,
+  ...optionalFields
+}: {
+  userId: Workout["userId"];
+  workingWeight: Workout["workingWeight"];
+} & Partial<Workout>) {
   const workoutRef = doc(getWorkOutCollection());
   const workout: Workout = {
     id: workoutRef.id,
@@ -33,6 +36,7 @@ export async function createWorkout(
       overheadPress: null,
       squat: null,
     },
+    ...optionalFields,
   };
   await setDoc(workoutRef, workout);
 }

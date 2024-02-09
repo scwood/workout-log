@@ -4,24 +4,9 @@ import {
   getAuth,
   signInWithPopup,
 } from "firebase/auth";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 
-export interface AuthContext {
-  userId: string | null;
-  displayName: string | null;
-  isLoading: boolean;
-  error: Error | null;
-  signIn: (provider: "google" | "github") => void;
-  signOut: () => void;
-}
-
-const authContext = createContext<AuthContext | null>(null);
+import { authContext } from "../contexts/authContext";
 
 export interface AuthProviderProps {
   children?: JSX.Element;
@@ -81,16 +66,6 @@ export function AuthProvider(props: AuthProviderProps) {
       {isLoading ? null : children}
     </authContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = useContext(authContext);
-
-  if (!context) {
-    throw new Error("useAuth must be used inside an AuthProvider");
-  }
-
-  return context;
 }
 
 function signInWithGoogle() {

@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { useCurrentUser } from "../components/CurrentUserProvider";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import { createWorkout } from "../api/workoutsApi";
-import { Exercise } from "../types/Exercise";
 import { currentWorkoutQueryKey } from "./useCurrentWorkoutQuery";
+import { Workout } from "../types/Workout";
 
 export function useCreateWorkoutMutation() {
   const { userId } = useCurrentUser();
@@ -12,10 +12,11 @@ export function useCreateWorkoutMutation() {
   return useMutation({
     mutationFn: ({
       workingWeight,
+      ...optionalFields
     }: {
-      workingWeight: { [key in Exercise]: number };
-    }) => {
-      return createWorkout(userId, workingWeight);
+      workingWeight: Workout["workingWeight"];
+    } & Partial<Workout>) => {
+      return createWorkout({ userId, workingWeight, ...optionalFields });
     },
     onSettled: () => {
       queryClient.invalidateQueries({

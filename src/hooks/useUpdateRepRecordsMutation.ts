@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { useCurrentUser } from "../components/CurrentUserProvider";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import { upsertRepRecords } from "../api/repRecordsApi";
 import { RepRecords } from "../types/RepRecords";
 import { repRecordsQueryKey } from "./useRepRecordsQuery";

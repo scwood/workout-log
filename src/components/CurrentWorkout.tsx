@@ -138,7 +138,7 @@ export function CurrentWorkout() {
 
         <Modal
           centered
-          title="Edit workout"
+          title="Edit current workout"
           opened={isEditWorkoutModalOpen}
           onClose={() => setIsEditWorkoutModalOpen(false)}
         >

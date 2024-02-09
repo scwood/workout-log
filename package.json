@@ -15,9 +15,12 @@
   },
   "dependencies": {
     "@mantine/core": "^7.1.5",
+    "@mantine/dates": "^7.5.1",
     "@mantine/hooks": "^7.1.5",
     "@tabler/icons-react": "^2.39.0",
     "@tanstack/react-query": "^5.8.4",
+    "@visx/visx": "^3.8.0",
+    "dayjs": "^1.11.10",
     "firebase": "^10.6.0",
     "gh-pages": "^6.1.0",
     "prettier": "^3.0.3",

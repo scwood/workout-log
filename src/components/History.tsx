@@ -43,7 +43,7 @@ export function History() {
         </Title>
         <WorkingWeightChart workouts={completedWorkouts} />
         <Flex justify="space-between" align="center">
-          <Title order={3} mb="xs">
+          <Title order={3} mb="xs" mt="lg">
             Past workouts
           </Title>
 

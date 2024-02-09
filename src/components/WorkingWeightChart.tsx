@@ -1,8 +1,21 @@
 import { useMantineTheme } from "@mantine/core";
-import { Grid, Axis, XYChart, LineSeries } from "@visx/xychart";
+import {
+  Grid,
+  Axis,
+  XYChart,
+  LineSeries,
+  DataProvider,
+  DataContext,
+} from "@visx/xychart";
+import { LegendOrdinal } from "@visx/legend";
 
 import { Workout } from "../types/Workout";
-import { allExercises } from "../types/Exercise";
+import {
+  Exercise,
+  allExercises,
+  exerciseDisplayNames,
+} from "../types/Exercise";
+import { useContext } from "react";
 
 export interface WorkingWeightCharProps {
   workouts: Workout[];
@@ -16,12 +29,10 @@ export function WorkingWeightChart(props: WorkingWeightCharProps) {
   });
 
   return (
-    <>
+    <DataProvider xScale={{ type: "time" }} yScale={{ type: "linear" }}>
       <XYChart
-        margin={{ top: 20, bottom: 70, left: 50, right: 20 }}
+        margin={{ top: 20, bottom: 58, left: 50, right: 20 }}
         height={320}
-        xScale={{ type: "time" }}
-        yScale={{ type: "linear" }}
       >
         <Axis
           tickStroke={theme.colors.gray[8]}
@@ -46,14 +57,16 @@ export function WorkingWeightChart(props: WorkingWeightCharProps) {
           label="Date"
           tickLabelProps={{
             fill: theme.colors.dark[0],
-            angle: -70,
             dy: 12,
+          }}
+          tickFormat={(value: Date) => {
+            return value.toLocaleDateString(undefined, { dateStyle: "short" });
           }}
           labelProps={{
             fill: theme.colors.dark[0],
             fontSize: 12,
             fontWeight: 600,
-            dy: 20,
+            dy: 10,
           }}
         />
         <Grid lineStyle={{ stroke: theme.colors.gray[8] }} strokeWidth="1px" />
@@ -69,12 +82,33 @@ export function WorkingWeightChart(props: WorkingWeightCharProps) {
               key={exercise}
               dataKey={exercise}
               data={data}
-              xAccessor={(data) => data.x}
-              yAccessor={(data) => data.y}
+              xAccessor={(data) => data?.x}
+              yAccessor={(data) => data?.y}
             />
           );
         })}
       </XYChart>
-    </>
+      <ChartLegend />
+    </DataProvider>
+  );
+}
+
+function ChartLegend() {
+  const { colorScale } = useContext(DataContext);
+
+  if (!colorScale) {
+    return null;
+  }
+
+  return (
+    <LegendOrdinal
+      direction="row"
+      scale={colorScale}
+      itemMargin="0px 12px 0px 0px"
+      legendLabelProps={{ style: { fontSize: 12 } }}
+      labelFormat={(item) => {
+        return exerciseDisplayNames[item as Exercise];
+      }}
+    />
   );
 }

@@ -8,7 +8,7 @@ import {
 import { Exercise, exerciseDisplayNames } from "../types/Exercise";
 import { useState } from "react";
 import { Workout } from "../types/Workout";
-import { RepRecords } from "../types/RepRecords";
+import { RepRecords } from "../hooks/useRepRecords";
 
 export interface ExerciseProps {
   exercise: Exercise;
@@ -66,7 +66,7 @@ export function ExerciseTable(props: ExerciseProps) {
       </Table>
       <Text c="dimmed" fz="sm" mb="xs">
         Last set rep record at this weight:{" "}
-        {repRecords.records[exercise][workingWeight] || "N/A"}
+        {repRecords[exercise][workingWeight] || "N/A"}
       </Text>
       <Button
         size="xs"

@@ -101,14 +101,26 @@ function ChartLegend() {
   }
 
   return (
-    <LegendOrdinal
-      direction="row"
-      scale={colorScale}
-      itemMargin="0px 12px 0px 0px"
-      legendLabelProps={{ style: { fontSize: 12 } }}
-      labelFormat={(item) => {
-        return exerciseDisplayNames[item as Exercise];
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
-    />
+    >
+      <LegendOrdinal
+        direction="row"
+        labelAlign="center"
+        shapeHeight={2}
+        shapeWidth={10}
+        scale={colorScale}
+        itemMargin="0px 12px 0px 0px"
+        legendLabelProps={{ style: { fontSize: 11 } }}
+        labelFormat={(item) => {
+          return exerciseDisplayNames[item as Exercise];
+        }}
+      />
+    </div>
   );
 }

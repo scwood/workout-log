@@ -18,7 +18,7 @@ export function PastWorkoutCard(props: PastWorkoutCardProps) {
         <Text c="dimmed" size="xs">
           Completed on{" "}
           {new Date(workout.completedTimestamp || 0).toLocaleString(undefined, {
-            dateStyle: "full",
+            dateStyle: "long",
             timeStyle: "short",
           })}
         </Text>

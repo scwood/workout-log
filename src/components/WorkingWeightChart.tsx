@@ -17,11 +17,11 @@ import {
   exerciseDisplayNames,
 } from "../types/Exercise";
 
-export interface WorkingWeightCharProps {
+export interface WorkingWeightChartProps {
   workouts: Workout[];
 }
 
-export function WorkingWeightChart(props: WorkingWeightCharProps) {
+export function WorkingWeightChart(props: WorkingWeightChartProps) {
   const { workouts } = props;
   const theme = useMantineTheme();
   const completedWorkouts = workouts.filter((workout) => {

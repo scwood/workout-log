@@ -13,14 +13,16 @@ export function PastWorkoutCard(props: PastWorkoutCardProps) {
   const theme = useMantineTheme();
 
   return (
-    <Card shadow="sm" fz="sm">
-      <Text c="dimmed" size="xs" mb={4}>
-        Completed on{" "}
-        {new Date(workout.completedTimestamp || 0).toLocaleString(undefined, {
-          dateStyle: "full",
-          timeStyle: "short",
-        })}
-      </Text>
+    <Card withBorder shadow="sm" fz="sm">
+      <Card.Section withBorder inheritPadding py="xs" mb="xs">
+        <Text c="dimmed" size="xs">
+          Completed on{" "}
+          {new Date(workout.completedTimestamp || 0).toLocaleString(undefined, {
+            dateStyle: "full",
+            timeStyle: "short",
+          })}
+        </Text>
+      </Card.Section>
       <Flex>
         <Flex direction="column" justify="space-around">
           {allExercises.map((exercise) => {

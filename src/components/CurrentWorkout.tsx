@@ -6,6 +6,7 @@ import {
   Button,
   Modal,
   ActionIcon,
+  Text,
 } from "@mantine/core";
 import { useState } from "react";
 import { IconPencil } from "@tabler/icons-react";
@@ -86,10 +87,8 @@ export function CurrentWorkout() {
   } else {
     return (
       <>
-        <Flex justify="space-between" align="center">
-          <Title order={3} mb="md">
-            Current workout
-          </Title>
+        <Flex align="center" justify="space-between">
+          <Title order={3}>Current workout</Title>
           <ActionIcon
             variant="subtle"
             color="gray"
@@ -98,7 +97,14 @@ export function CurrentWorkout() {
             <IconPencil />
           </ActionIcon>
         </Flex>
-        <Flex direction="column" gap="lg" mb="lg">
+        <Text fz="sm" c="dimmed" mb="sm">
+          Created on{" "}
+          {new Date(currentWorkout.createdTimestamp).toLocaleString(undefined, {
+            dateStyle: "long",
+            timeStyle: "short",
+          })}
+        </Text>
+        <Flex direction="column" gap="md" mb="lg">
           {allExercises.map((exercise) => {
             return (
               currentWorkout.lastSetReps[exercise] === null && (

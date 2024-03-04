@@ -1,4 +1,12 @@
-import { Table, Title, Text, Button, Modal, NumberInput } from "@mantine/core";
+import {
+  Table,
+  Title,
+  Text,
+  Button,
+  Modal,
+  NumberInput,
+  Card,
+} from "@mantine/core";
 
 import {
   calculatePlates,
@@ -29,43 +37,47 @@ export function ExerciseTable(props: ExerciseProps) {
   const workingWeight = workout.workingWeight[exercise];
 
   return (
-    <div>
-      <Title order={4}>{displayName}</Title>
-      <Table mb="xs">
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Reps</Table.Th>
-            <Table.Th>Weight (lb)</Table.Th>
-            <Table.Th>Plates (lb)</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          <Table.Tr>
-            <Table.Td>4</Table.Td>
-            <Table.Td>{calculateWarmupWeight(workingWeight, 0.55)}</Table.Td>
-            <Table.Td>{calculateWarmupPlates(workingWeight, 0.55)}</Table.Td>
-          </Table.Tr>
-          <Table.Tr>
-            <Table.Td>3</Table.Td>
-            <Table.Td>{calculateWarmupWeight(workingWeight, 0.7)}</Table.Td>
-            <Table.Td>{calculateWarmupPlates(workingWeight, 0.7)}</Table.Td>
-          </Table.Tr>
-          <Table.Tr>
-            <Table.Td>2</Table.Td>
-            <Table.Td>{calculateWarmupWeight(workingWeight, 0.85)}</Table.Td>
-            <Table.Td>{calculateWarmupPlates(workingWeight, 0.85)}</Table.Td>
-          </Table.Tr>
-          <Table.Tr>
-            <Table.Td>
-              {exercise === "deadLift" ? "1x5+" : "2x5, 1x5+"}
-            </Table.Td>
-            <Table.Td>{workingWeight}</Table.Td>
-            <Table.Td>{calculatePlates(workingWeight)}</Table.Td>
-          </Table.Tr>
-        </Table.Tbody>
-      </Table>
+    <Card withBorder shadow="sm">
+      <Card.Section inheritPadding withBorder py="sm" mb={6}>
+        <Title order={4}>{displayName}</Title>
+      </Card.Section>
+      <Card.Section withBorder inheritPadding mb="xs">
+        <Table mb="xs">
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Reps</Table.Th>
+              <Table.Th>Weight (lb)</Table.Th>
+              <Table.Th>Plates (lb)</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            <Table.Tr>
+              <Table.Td>4</Table.Td>
+              <Table.Td>{calculateWarmupWeight(workingWeight, 0.55)}</Table.Td>
+              <Table.Td>{calculateWarmupPlates(workingWeight, 0.55)}</Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Td>3</Table.Td>
+              <Table.Td>{calculateWarmupWeight(workingWeight, 0.7)}</Table.Td>
+              <Table.Td>{calculateWarmupPlates(workingWeight, 0.7)}</Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Td>2</Table.Td>
+              <Table.Td>{calculateWarmupWeight(workingWeight, 0.85)}</Table.Td>
+              <Table.Td>{calculateWarmupPlates(workingWeight, 0.85)}</Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Td>
+                {exercise === "deadLift" ? "1x5+" : "2x5, 1x5+"}
+              </Table.Td>
+              <Table.Td>{workingWeight}</Table.Td>
+              <Table.Td>{calculatePlates(workingWeight)}</Table.Td>
+            </Table.Tr>
+          </Table.Tbody>
+        </Table>
+      </Card.Section>
       <Text c="dimmed" fz="sm" mb="xs">
-        Last set rep record at this weight:{" "}
+        Current rep record at this weight:{" "}
         {repRecords[exercise][workingWeight] || "N/A"}
       </Text>
       <Button
@@ -98,7 +110,7 @@ export function ExerciseTable(props: ExerciseProps) {
           Save
         </Button>
       </Modal>
-    </div>
+    </Card>
   );
 
   function handleSave() {

@@ -46,7 +46,7 @@ export function History() {
             <IconPlus />
           </ActionIcon>
         </Flex>
-        <Flex gap={8} direction="column">
+        <Flex gap="sm" direction="column">
           {completedWorkouts.map((workout) => {
             return <PastWorkoutCard key={workout.id} workout={workout} />;
           })}

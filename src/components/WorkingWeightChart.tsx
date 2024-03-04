@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { useMantineTheme } from "@mantine/core";
 import {
   Grid,
@@ -15,7 +16,6 @@ import {
   allExercises,
   exerciseDisplayNames,
 } from "../types/Exercise";
-import { useContext } from "react";
 
 export interface WorkingWeightCharProps {
   workouts: Workout[];

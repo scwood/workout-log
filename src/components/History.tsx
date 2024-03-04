@@ -1,27 +1,18 @@
 import { useState } from "react";
-import { IconCheck, IconPlus, IconX } from "@tabler/icons-react";
-import {
-  ActionIcon,
-  Center,
-  Flex,
-  Loader,
-  Table,
-  Title,
-  useMantineTheme,
-} from "@mantine/core";
+import { IconPlus } from "@tabler/icons-react";
+import { ActionIcon, Center, Flex, Loader, Title } from "@mantine/core";
 
 import { useWorkoutsQuery } from "../hooks/useWorkoutsQuery";
-import { allExercises, exerciseDisplayNames } from "../types/Exercise";
 import { WorkingWeightChart } from "./WorkingWeightChart";
 import { CreateWorkoutModal } from "./CreateWorkoutModal";
 import { useCreateWorkoutMutation } from "../hooks/useCreateWorkoutMutation";
 import { Workout } from "../types/Workout";
+import { PastWorkoutCard } from "./PastWorkoutCard";
 
 export function History() {
   const { data: workouts, isLoading, isError } = useWorkoutsQuery();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { mutate: createWorkout, isLoadingCreate } = useCreateWorkoutMutation();
-  const theme = useMantineTheme();
 
   if (isLoading) {
     return (
@@ -43,7 +34,7 @@ export function History() {
         </Title>
         <WorkingWeightChart workouts={completedWorkouts} />
         <Flex justify="space-between" align="center">
-          <Title order={3} mb="xs" mt="lg">
+          <Title order={3} mb="md" mt="lg">
             Past workouts
           </Title>
 
@@ -55,45 +46,11 @@ export function History() {
             <IconPlus />
           </ActionIcon>
         </Flex>
-        <Table mb="xs">
-          <Table.Thead>
-            <Table.Tr>
-              {allExercises.map((exercise) => {
-                return (
-                  <Table.Th key={exercise}>
-                    {exerciseDisplayNames[exercise]}
-                  </Table.Th>
-                );
-              })}
-              <Table.Th>Date</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {completedWorkouts.map((workout) => {
-              return (
-                <Table.Tr key={workout.id}>
-                  {allExercises.map((exercise) => {
-                    return (
-                      <Table.Td key={exercise}>
-                        <Flex align="center" gap={2}>
-                          <span>{workout.workingWeight[exercise]}</span>
-                          {(workout.lastSetReps[exercise] || 0) >= 5 ? (
-                            <IconCheck color={theme.colors.lime[5]} size={16} />
-                          ) : (
-                            <IconX color={theme.colors.red[6]} size={16} />
-                          )}
-                        </Flex>
-                      </Table.Td>
-                    );
-                  })}
-                  <Table.Td>
-                    {new Date(workout.completedTimestamp ?? 0).toDateString()}
-                  </Table.Td>
-                </Table.Tr>
-              );
-            })}
-          </Table.Tbody>
-        </Table>
+        <Flex gap={8} direction="column">
+          {completedWorkouts.map((workout) => {
+            return <PastWorkoutCard key={workout.id} workout={workout} />;
+          })}
+        </Flex>
         <CreateWorkoutModal
           opened={isCreateModalOpen}
           isLoadingCreate={isLoadingCreate}

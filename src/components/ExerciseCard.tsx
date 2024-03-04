@@ -18,14 +18,14 @@ import { useState } from "react";
 import { Workout } from "../types/Workout";
 import { RepRecords } from "../hooks/useRepRecords";
 
-export interface ExerciseProps {
+export interface ExerciseCardProps {
   exercise: Exercise;
   workout: Workout;
   repRecords: RepRecords;
   onComplete: (exercise: Exercise, lastSetReps: number) => void;
 }
 
-export function ExerciseTable(props: ExerciseProps) {
+export function ExerciseCard(props: ExerciseCardProps) {
   const { exercise, workout, repRecords, onComplete } = props;
   const [isLastSetModalOpen, setIsLastSetModalOpen] = useState(false);
 
@@ -38,7 +38,7 @@ export function ExerciseTable(props: ExerciseProps) {
 
   return (
     <Card withBorder shadow="sm">
-      <Card.Section inheritPadding withBorder py="sm" mb={6}>
+      <Card.Section inheritPadding withBorder py="xs" mb={6}>
         <Title order={4}>{displayName}</Title>
       </Card.Section>
       <Card.Section withBorder inheritPadding mb="xs">

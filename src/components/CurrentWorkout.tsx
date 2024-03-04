@@ -11,7 +11,7 @@ import {
 import { useState } from "react";
 import { IconPencil } from "@tabler/icons-react";
 
-import { ExerciseTable } from "./ExerciseTable";
+import { ExerciseCard } from "./ExerciseCard";
 import { WorkingWeightForm } from "./WorkingWeightForm";
 import { useCurrentWorkoutQuery } from "../hooks/useCurrentWorkoutQuery";
 import { Exercise, allExercises } from "../types/Exercise";
@@ -70,6 +70,9 @@ export function CurrentWorkout() {
         <Button color="green" mb="lg" onClick={handleCreateNextWorkout}>
           Create next workout
         </Button>
+        <Title order={3} mb="md">
+          Completed exercises
+        </Title>
         <Flex direction="column" gap="lg">
           {allExercises.map((exercise) => {
             return (
@@ -108,7 +111,7 @@ export function CurrentWorkout() {
           {allExercises.map((exercise) => {
             return (
               currentWorkout.lastSetReps[exercise] === null && (
-                <ExerciseTable
+                <ExerciseCard
                   key={exercise}
                   exercise={exercise}
                   workout={currentWorkout}

@@ -7,6 +7,7 @@ import {
   Modal,
   ActionIcon,
   Text,
+  Textarea,
 } from "@mantine/core";
 import { useState } from "react";
 import { IconPencil } from "@tabler/icons-react";
@@ -39,8 +40,16 @@ export function CurrentWorkout() {
   const { mutate: updateWorkout } = useUpdateWorkoutMutation();
 
   const [isEditWorkoutModalOpen, setIsEditWorkoutModalOpen] = useState(false);
+  const [notes, setNotes] = useState(currentWorkout?.notes ?? "");
   const isLoading = isLoadingWorkout || isLoadingRepRecords;
   const isError = failedToLoadWorkout || failedToLoadRepRecords;
+
+  // Sync notes from currentWorkout to input
+  const [prevCurrentWorkout, setPrevCurrentWorkout] = useState(currentWorkout);
+  if (currentWorkout !== prevCurrentWorkout) {
+    setPrevCurrentWorkout(currentWorkout);
+    setNotes(currentWorkout?.notes ?? "");
+  }
 
   if (isLoading) {
     return (
@@ -67,24 +76,11 @@ export function CurrentWorkout() {
           Click the button below to create the next workout or click "undo" on
           an exercise to correct any mistakes.
         </p>
-        <Button color="green" mb="lg" onClick={handleCreateNextWorkout}>
+        <Button color="green" mb="sm" onClick={handleCreateNextWorkout}>
           Create next workout
         </Button>
-        <Title order={3} mb="md">
-          Completed exercises
-        </Title>
-        <Flex direction="column" gap="lg">
-          {allExercises.map((exercise) => {
-            return (
-              <CompletedExercise
-                key={exercise}
-                exercise={exercise}
-                workout={currentWorkout}
-                onUndo={handleUndo}
-              />
-            );
-          })}
-        </Flex>
+        {renderNotes()}
+        {renderCompletedWorkouts()}
       </>
     );
   } else {
@@ -107,7 +103,7 @@ export function CurrentWorkout() {
             timeStyle: "short",
           })}
         </Text>
-        <Flex direction="column" gap="md" mb="lg">
+        <Flex direction="column" gap="md" mb="sm">
           {allExercises.map((exercise) => {
             return (
               currentWorkout.lastSetReps[exercise] === null && (
@@ -116,12 +112,48 @@ export function CurrentWorkout() {
                   exercise={exercise}
                   workout={currentWorkout}
                   repRecords={repRecords}
-                  onComplete={handleComplete}
+                  onComplete={handleCompleteExercise}
                 />
               )
             );
           })}
         </Flex>
+        {renderNotes()}
+        {renderCompletedWorkouts()}
+        <Modal
+          centered
+          title="Edit current workout"
+          opened={isEditWorkoutModalOpen}
+          onClose={() => setIsEditWorkoutModalOpen(false)}
+        >
+          <WorkingWeightForm
+            initialValues={currentWorkout?.workingWeight}
+            onSave={handleUpdateWorkingWeight}
+          />
+        </Modal>
+      </>
+    );
+  }
+
+  function renderNotes() {
+    return (
+      <Textarea
+        label="Notes"
+        placeholder="Accessory lifts, feelings, etc."
+        mb="lg"
+        value={notes}
+        onChange={(event) => setNotes(event.target.value)}
+        onBlur={handleNotesBlur}
+      />
+    );
+  }
+
+  function renderCompletedWorkouts() {
+    if (!currentWorkout) {
+      return null;
+    }
+    return (
+      <>
         {isAnyExerciseComplete() && (
           <Title order={3} mb="md">
             Completed exercises
@@ -141,18 +173,6 @@ export function CurrentWorkout() {
             );
           })}
         </Flex>
-
-        <Modal
-          centered
-          title="Edit current workout"
-          opened={isEditWorkoutModalOpen}
-          onClose={() => setIsEditWorkoutModalOpen(false)}
-        >
-          <WorkingWeightForm
-            initialValues={currentWorkout?.workingWeight}
-            onSave={handleUpdateWorkingWeight}
-          />
-        </Modal>
       </>
     );
   }
@@ -173,7 +193,7 @@ export function CurrentWorkout() {
     setIsEditWorkoutModalOpen(false);
   }
 
-  function handleComplete(exercise: Exercise, lastSetReps: number) {
+  function handleCompleteExercise(exercise: Exercise, lastSetReps: number) {
     if (!currentWorkout) {
       return;
     }
@@ -188,6 +208,15 @@ export function CurrentWorkout() {
       updates.completedTimestamp = Date.now();
     }
     updateWorkout({ workout: { ...updates } });
+  }
+
+  function handleNotesBlur() {
+    if (!currentWorkout) {
+      return;
+    }
+    const trimmedNotes = notes.trim();
+    const notesUpdate = notes.trim().length > 0 ? trimmedNotes : null;
+    updateWorkout({ workout: { ...currentWorkout, notes: notesUpdate } });
   }
 
   function handleUndo(exercise: Exercise) {

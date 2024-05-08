@@ -1,4 +1,4 @@
-import { Card, Flex, Text, useMantineTheme } from "@mantine/core";
+import { Box, Card, Flex, Text, useMantineTheme } from "@mantine/core";
 
 import { Workout } from "../types/Workout";
 import { allExercises, exerciseDisplayNames } from "../types/Exercise";
@@ -32,9 +32,13 @@ export function PastWorkoutCard(props: PastWorkoutCardProps) {
         <Flex direction="column" justify="space-around" pl="sm">
           {allExercises.map((exercise) => {
             return (workout.lastSetReps[exercise] || 0) >= 5 ? (
-              <IconCheck color={theme.colors.lime[5]} size={14} />
+              <IconCheck
+                key={exercise}
+                color={theme.colors.lime[5]}
+                size={14}
+              />
             ) : (
-              <IconX color={theme.colors.red[6]} size={14} />
+              <IconX key={exercise} color={theme.colors.red[6]} size={14} />
             );
           })}
         </Flex>
@@ -49,6 +53,7 @@ export function PastWorkoutCard(props: PastWorkoutCardProps) {
           })}
         </Flex>
       </Flex>
+      {workout.notes && <Box mt={6}>Notes: {workout.notes}</Box>}
     </Card>
   );
 }

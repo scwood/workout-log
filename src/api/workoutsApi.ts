@@ -29,6 +29,7 @@ export async function createWorkout({
     userId,
     createdTimestamp: Date.now(),
     completedTimestamp: null,
+    notes: null,
     workingWeight,
     lastSetReps: {
       benchPress: null,
